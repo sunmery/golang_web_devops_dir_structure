@@ -141,7 +141,7 @@
 
 - ORM管理器: [GORM](https://gorm.io/gorm)
 - 数据库驱动: [Postgres](https://gorm.io/driver/postgres)
-- Redis:
+- Redis: [Go-Redis](https://github.com/redis/go-redis)
 
 - 迁移数据库 [github](https://github.com/golang-migrate/migrate)
     - [迁移库](https://ggithub.com/golang-migrate/migrate/v4)
@@ -234,12 +234,17 @@
 
 6. sql迁移.
 
-```shell
-go get github.com/golang-migrate/migrate/v4
-go get github.com/golang-migrate/migrate/v4/database/postgres
-go get github.com/golang-migrate/migrate/v4/source/file
-```
+    ```shell
+    go get github.com/golang-migrate/migrate/v4
+    go get github.com/golang-migrate/migrate/v4/database/postgres
+    go get github.com/golang-migrate/migrate/v4/source/file
+    ```
 
+7. `go-redis` Redis 客户端
+    ```shell
+    go get github.com/redis/go-redis/v9
+    ```
+   
 ### 安装前端服务
 
 1. 进入到项目的前端目录`Client`.
