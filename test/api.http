@@ -1,0 +1,62 @@
+## 携带 Body 请求方式示例
+POST {{url}}/auth
+
+Content-Type: application/json
+
+{"account":"111111","password":"111111"}
+
+### form-data请求方式示例
+PUT {{url}}/register
+Content-Type: multipart/form-data; boundary=boundary
+Content-Type: application/json
+
+--boundary
+Content-Disposition: form-data; name="account";
+
+--boundary
+Content-Disposition: form-data; name="avatar"; filename="avatar.svg"
+
+// 发送文件
+< ../uploads/avatar.svg
+
+> {%
+
+client.test("Request executed successfully", function() {
+  client.assert(response.json().code === 200, "Response status is not 200");
+});
+
+%}
+
+### 携带 URLSearchParams 示例
+GET {{url}}/historyMessage?account=student
+
+### 发送 WebSocket 示例
+WEBSOCKET ws://{{url}}/ws/chat
+Content-Type: application/json
+
+===
+{
+  "user_identity": "student",
+  "room_identity": "1",
+  "data": "hello teacher",
+  "created_at": 1676548940678,
+  "updated_at": 1676548940678
+}
+=== wait-for-server
+=== wait-for-server
+{
+  "user_identity": "teacher",
+  "room_identity": "1",
+  "data": "hello student",
+  "created_at": 1676548940678,
+  "updated_at": 1676548940678
+}
+===
+{
+  "message": "And this message together",
+  "repeat": 1
+}
+
+### 发送 JWT 示例
+GET {{url}}/auth/specialty?query=all
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50IjoiMjEzMDEyMDIwNTE3Iiwicm9sZSI6InN0dWRlbnQiLCJleHAiOjE2ODExNzk4OTF9.xEepCb6g0zBdqwF5BwlJivLjPSo0MrqJBm-yTZevRB8

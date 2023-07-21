@@ -1,0 +1,49 @@
+stages:
+  - web
+  - deploy
+
+cache:
+  key: edu_system_client
+  paths:
+    - ./node_modules
+    - ./client/node_modules
+    - ./tag.txt
+
+job_web:
+  stage: web
+  image: node:16-alpine
+  tags:
+    - front-end-1
+  script:
+    - npm config set registry https://registry.npmmirror.com
+    - npm install pnpm -g
+    - pnpm install
+    - cd ./client
+    - pnpm install --no-frozen-lockfile
+    - pnpm build:produ
+  only:
+    - main
+  # 提供打包好的文件
+  artifacts:
+    paths:
+      - ./client/dist
+    expire_in: 3 day
+
+job_deploy:
+  stage: deploy
+  image: alpine:latest
+  only:
+    - main
+  tags:
+    - deploy-1
+  script:
+    - ls
+    - echo "正在生成索引缓存索引提供搜索安装速度"
+    - echo "下载所需工具"
+    - sh ./cmd/download.sh
+    - echo "加载环境变量"
+    - export SSHPASS="$PASSWORD"
+    - bash ./cmd/web_build.sh
+    - bash ./cmd/cache.sh
+    - echo "任务完成"
+    - rm -rf *

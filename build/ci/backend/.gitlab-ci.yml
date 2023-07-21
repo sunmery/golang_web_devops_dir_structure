@@ -1,0 +1,46 @@
+stages:
+  - golang
+  - deploy
+
+cache:
+  key: edu_system_backend
+  paths:
+    - ./.cache
+    - ./tag.txt
+
+job_golang:
+  stage: golang
+  image: golang:alpine
+  tags:
+    - edu-back-end
+  script:
+    - mkdir -p .cache
+    - export GOPATH="$CI_PROJECT_DIR/.cache"
+    - go env -w GOPROXY=https://proxy.golang.com.cn,direct
+    - go get
+    - go test -v ./test || true
+    - go build -o app
+    - chmod +x app
+  artifacts:
+    paths:
+      - ./app
+    expire_in: 1 day
+
+job_deploy:
+  stage: deploy
+  image: alpine:latest
+  only:
+    - main
+  tags:
+    - edu-front-end
+  artifacts:
+    paths:
+      - ./tag.txt
+  script:
+    - sh ./cmd/download.sh
+    - echo "加载环境变量"
+    - export SSHPASS="$PASSWORD"
+    - bash ./cmd/go_build.sh
+    - bash ./cmd/cache.sh
+    - echo "任务完成"
+    - rm -rf *
