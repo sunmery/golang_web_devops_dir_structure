@@ -1,0 +1,42 @@
+/**
+ * @see https://www.electron.build/configuration/configuration
+ */
+{
+  "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
+  "appId": "YourAppID", // 通常是一个反向域名（例如 com. example. myapp）。发布应用程序时，需要在包名称和 ID 中使用相同的值
+  "productName": "教务管理系统",
+  "asar": true, // 是否将应用程序文件打包到 asar 文件中. ASAR 是一种类似 zip 的存档格式，可以减小应用程序包的大小
+  "directories": { // 输出 指定应用程序包的输出目录。此处使用 ${version} 变量来指示将在输出目录中创建与应用程序版本号对应的目录。
+    "output": "release/${version}"
+  },
+  "files": [
+    "dist-electron", // dist-Electron包含Electron应用程序的代码。
+    "dist"// dist 包含应用程序的其他资源（如 HTML、CSS、图像等）
+  ],
+  "mac": { // 适用于 macOS 平台的特定配置
+    // "icon":"", //图标 图标是应用程序的名称，版本是应用程序的版本号
+    "artifactName": "${productName}_${version}.${ext}", //工件名称 指定了应用程序包的文件名，其中使用了 ${productName} 和 ${version} 变量。产品名称是应用程序的名称，版本是应用程序的版本号。
+    "target": [ // 目标 已指定应用程序打包的目标
+      "dmg" //此处设置为 dmg，这意味着将应用程序打包到 macOS 安装程序中。
+    ]
+  },
+  "win": { // 适用于 Windows 平台的特定配置
+    "target": [
+      {
+        "target": "nsis", //目标 已指定应用程序打包的目标，其中设置为 nsis，这意味着将应用程序打包到 Windows 安装程序中。
+        "arch": [ // arch 指定的打包 CPU 体系结构设置, "arm64" | "armv7l" | "ia32" | "universal" | "x64"
+          "x64", // 表示仅打包 64 位 Windows。
+          "universal",
+          "arm64"
+        ]
+      }
+    ],
+    "artifactName": "${productName}_${version}.${ext}"
+  },
+  "nsis": { // 特定于 Windows 平台的 NSIS 配置。
+    "oneClick": false, // 一键式安装指定是否开启一键式安装模式
+    "perMachine": false, // perMachine 指定是否为所有用户安装。
+    "allowToChangeInstallationDirectory": true, // 是否允许用户更改安装目录
+    "deleteAppDataOnUninstall": false // 删除应用程序数据卸载指定在卸载应用程序时是否删除用户数据
+  }
+}

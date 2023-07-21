@@ -1,0 +1,14 @@
+* {
+	padding : 0;
+	margin  : 0;
+}
+
+/* 字体 */
+@font-face {
+	font-family : "HYJiaShuJ", sans-serif;
+	src         : url("../assets/fonts/HYJiaShuJ.ttf");
+}
+
+body {
+	font-family : "HYJiaShuJ", sans-serif;
+}
