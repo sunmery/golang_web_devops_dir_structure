@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Install') {
+            steps {
+                sh 'pnpm install'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'pnpm build'
+            }
+        }
+
+        stage('Docker build and push') {
+            steps {
+                script {
+                    docker.build("my-registry/my-web-app:${env.BUILD_ID}").push()
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh("kubectl set image deployment/my-web-app my-web-app=my-registry/my-web-app:${env.BUILD_ID}")
+            }
+        }
+    }
+}

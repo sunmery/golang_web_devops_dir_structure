@@ -1,0 +1,4 @@
+MODE : "dev"
+PORT : 4000
+HOST : "0.0.0.0"
+FILE : true

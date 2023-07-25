@@ -15,6 +15,6 @@ fmt:
 	$(GOPATH)/bin/swag fmt
 
 air:
-	$(GOPATH)/bin/air -- -mode=dev -port=4000
+	$(GOPATH)/bin/air -- -mode=dev -port=4000 -file=false
 
 all: swag-init build

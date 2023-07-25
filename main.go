@@ -32,30 +32,80 @@ func init() {
 
 //	@securityDefinitions.basic	BasicAuth
 
-//	@externalDocs.description	OpenAPI
-//	@externalDocs.url			https://swagger.io/resources/open-api/
-func main() {
-	// 开发模式, 不输入任何参数默认启动的模式
-	if helper.IsInSlice(cmd.MODE, cmd.DEVELOPMENT) {
-		slog.Info("读取开发环境配置文件")
+// @externalDocs.description	OpenAPI
+// @externalDocs.url			https://swagger.io/resources/open-api/
+//func main() {
+//	// 可在 Dockerfile 把新的start.yml文件覆盖旧文件方式启动程序
+//	if cmd.FILE == "true" {
+//		err := godotenv.Load("./config/start.yml")
+//		if err != nil {
+//			slog.Error(err)
+//		}
+//		cmd.MODE = os.Getenv("MODE")
+//		cmd.PORT = os.Getenv("PORT")
+//		cmd.HOST = os.Getenv("HOST")
+//	}
+//	// 开发模式, 不输入任何参数默认启动的模式
+//	if helper.IsInSlice(cmd.MODE, cmd.DEVELOPMENT) {
+//		slog.Info("读取开发环境配置文件")
+//
+//		err := godotenv.Load("./pkg/config/db.development.yaml")
+//		if err != nil {
+//			slog.Error(err)
+//		}
+//
+//		// 初始化数据库, Web服务
+//		cmd.InitServer()
+//	} else if helper.IsInSlice(cmd.MODE, cmd.PRODUCTION) {
+//		slog.Info("读取生产环境配置文件")
+//
+//		err := godotenv.Load("./pkg/config/db.production.yaml")
+//		if err != nil {
+//			slog.Error(err)
+//		}
+//
+//		cmd.InitServer()
+//	}
+//
+//	// 传递错误的参数会报错
+//	slog.Error("请传递正确的参数")
+//	os.Exit(2)
+//}
 
-		err := godotenv.Load("./pkg/config/db.development.yaml")
+func main() {
+	// 可在 Dockerfile 把新的start.yml文件覆盖旧文件方式启动程序
+	if cmd.FILE == "true" {
+		err := godotenv.Load("./config/start.yml")
 		if err != nil {
 			slog.Error(err)
 		}
+		cmd.MODE = os.Getenv("MODE")
+		cmd.PORT = os.Getenv("PORT")
+		cmd.HOST = os.Getenv("HOST")
+	}
 
-		// 初始化数据库, Web服务
-		cmd.InitServer()
-	} else if helper.IsInSlice(cmd.MODE, cmd.PRODUCTION) {
+	if helper.IsInSlice(cmd.MODE, cmd.PRODUCTION) {
 		slog.Info("读取生产环境配置文件")
 
+		// 读取生产模式的配置文件
 		err := godotenv.Load("./pkg/config/db.production.yaml")
 		if err != nil {
 			slog.Error(err)
 		}
-
 		cmd.InitServer()
+		return
 	}
+
+	slog.Info("读取开发环境配置文件")
+
+	// 开发模式, 不输入任何参数默认启动的模式
+	err := godotenv.Load("./pkg/config/db.development.yaml")
+	if err != nil {
+		slog.Error(err)
+	}
+
+	// 初始化数据库, Web服务
+	cmd.InitServer()
 
 	// 传递错误的参数会报错
 	slog.Error("请传递正确的参数")

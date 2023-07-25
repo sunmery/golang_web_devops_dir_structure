@@ -5,7 +5,7 @@ metadata:
   labels: # 标签，用于 Kubernetes 识别相关联的资源
     app: golang-app
 spec:
-  replicas: 3  # 应用实例（Pod）数量
+  replicas: 2  # 应用实例（Pod）数量
   selector:
     matchLabels: # 选择器，指定哪些 Pod 属于这个 Deployment
       app: golang-app
@@ -16,7 +16,7 @@ spec:
     spec:
       containers: # Pod 中的容器配置
         - name: golang-app  # 容器名称
-          image: myusername/my-golang-app:latest  # 容器使用的镜像
+          image: ccr.ccs.tencentyun.com/lisa/go:v2  # 容器使用的镜像
           ports:
             - containerPort: 8080  # 容器开放的端口
 ---
@@ -29,6 +29,6 @@ spec:
     app: golang-app
   ports:
     - protocol: TCP  # 使用的协议
-      port: 4000  # Service 的端口
-      targetPort: 8080  # Pod 的端口
-  type: LoadBalancer  # Service 类型，LoadBalancer 类型的 Service 会有一个外部 IP 地址，用于接收外部流量
+      port: 4001  # Service 的端口
+      targetPort: 4000  # Pod 的端口
+  type: NodePort  # Service 类型，LoadBalancer 类型的 Service 会有一个外部 IP 地址，用于接收外部流量

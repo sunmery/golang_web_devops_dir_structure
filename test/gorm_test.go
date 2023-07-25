@@ -8,13 +8,13 @@ import (
 )
 
 var (
-	HOST     = "47.120.5.83"
-	PORT     = "5432"
-	USER     = "root"
-	PASSWORD = "msdnmm"
-	DATABASE = "db"
-	TimeZone = "Asia/Shanghai"
+	HOST     = "139.198.165.102"
+	USER     = "postgres"
+	PASSWORD = "msdnmm,."
+	PORT     = "30000"
+	DATABASE = "postgres"
 	SslMode  = "disable"
+	TimeZone = "Asia/Shanghai"
 )
 
 type Product struct {
@@ -83,8 +83,7 @@ func TestGORM(t *testing.T) {
 	t.Logf("prods:%v", prods)
 
 	// 单个条件删除
-	db.First(&p1, 1). // 根据主键ID删除
-				Delete(&p1)
+	db.First(&p1, 1).Delete(&p1)
 
 	// 批量删除
 	db.Where("Code =", 2).Delete(&Product{})

@@ -1,0 +1,62 @@
+// 定义Jenkins-agent在k8s中的pod名称，不要重名
+def label = "build-testserverone-${UUID.randomUUID().toString()}"
+podTemplate(
+    cloud: "myk8s",
+    namespace: "jenkins",
+    label: label,
+    // 配置容器信息
+    containers: [
+        containerTemplate(
+            name: "jnlp",
+            image: "${HARBOR_REG}/jenkins/k8s-agent:1.0.1"
+        ),
+    ],
+    // 挂载，主要是为了使用宿主机的docker
+    volumes: [
+        hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
+        hostPathVolume(mountPath: '/usr/bin/docker', hostPath: '/usr/bin/docker'),
+        hostPathVolume(mountPath: '/root/.m2', hostPath: '/root/.m2')
+    ]
+) {
+    node(label) {
+        // 拉取代码
+        stage("clone") {
+            checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'jenkinsgitlab', url: 'ssh://git@192.168.0.102:13022/istiodemo/testserverone.git']]])
+        }
+
+        // 构建镜像
+        stage("build") {
+            echo "开始构建docker镜像"
+            sh "docker build -t ${HARBOR_REG}/istio-demo/testserverone:${env.BUILD_TIMESTAMP} ."
+            echo "构建结束"
+        }
+        // 上传镜像到私有镜像库
+        stage("publish") {
+            // 获取harbor的用户命和密码
+            withCredentials([usernamePassword(credentialsId: 'harbor', passwordVariable: 'HARBOR_SECRET_PSW', usernameVariable: 'HARBOR_SECRET_USR')]) {
+                echo "开始推送镜像"
+                sh "docker login -u ${HARBOR_SECRET_USR} -p ${HARBOR_SECRET_PSW} http://${HARBOR_REG}"
+                sh "docker push ${HARBOR_REG}/istio-demo/testserverone:${env.BUILD_TIMESTAMP}"
+                sh "docker rmi ${HARBOR_REG}/istio-demo/testserverone:${env.BUILD_TIMESTAMP}"
+                echo "推送结束"
+            }
+        }
+        // 进行k8s发布
+        stage("deploy") {
+            dir('deploy') {
+                def image_name = "${HARBOR_REG}\\/istio-demo\\/testserverone:${env.BUILD_TIMESTAMP}"
+                echo "替换image路径"
+                sh """
+                sed -i 's/IMAGE_PATH/${image_name}/g' deployment.yaml
+                """
+                echo "部署app"
+                sh "kubectl apply -f deployment.yaml"
+                echo "部署service"
+                sh "kubectl apply -f service.yaml"
+                echo "部署ingress"
+                sh "kubectl apply -f ingress.yaml"
+                echo "部署结束"
+            }
+        }
+    }
+}

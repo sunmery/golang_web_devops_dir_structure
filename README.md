@@ -20,6 +20,7 @@
     - ci 存放`gitlab-ci.yml`等`CI`脚本
     - package 存放云,操作系统, Dockerfile, docker-compose 等
 - client 存放客户端文件
+- config 与CI/CD Dockerfile 等工具结合的配置
 - cmd 存放可执行文件, 非 sh,bat 脚本的指令文件
 - docs 设计文档, 说明文件
 - examples 存储应用程序示例目录

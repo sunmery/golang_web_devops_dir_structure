@@ -15,7 +15,7 @@ import (
 // 测试迁移 sql 数据
 func TestMigrate(t *testing.T) {
 	// 创建数据库连接
-	db, err := sql.Open("postgres", "postgres://user:password@localhost:5432/root?sslmode=disable")
+	db, err := sql.Open("postgres", fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", USER, PASSWORD, HOST, PORT, DATABASE, SslMode))
 	if err != nil {
 		log.Fatalf("Unable to open database connection: %v", err)
 	}
