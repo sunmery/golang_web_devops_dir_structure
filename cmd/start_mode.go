@@ -26,6 +26,7 @@ func StartMode() {
 
 // InitServer 程序启动服务列表
 func InitServer() {
-	repository.InitPostgres()    // 数据库
-	router.WebServer(HOST, PORT) // Web 服务
+	//repository.InitPostgresConnect()    // Postgres数据库
+	repository.InitMysqlConnect() // Mysql数据库
+	router.WebServer(HOST, PORT)  // Web 服务
 }

@@ -6,7 +6,7 @@
 - 后端使用 gin
 - 鉴权使用 JWT
 - 前端使用 React + Electron + Vite
-- 数据库使用 GORM + Postgres + Redis
+- 数据库使用 GORM + Postgres/Mysql + Redis
 - 运维部署使用 Kubectl + Kubernetes 与 Dockerfile + docker-compose 或 gitlab + gitlab-Runner方式
 - 命名:
     - 目录名全部小写
@@ -141,7 +141,7 @@
 ## Database
 
 - ORM管理器: [GORM](https://gorm.io/gorm)
-- 数据库驱动: [Postgres](https://gorm.io/driver/postgres)
+- 数据库驱动: [Postgres](https://gorm.io/driver/postgres) / [Mysql](https://gorm.io/driver/mysql)
 - Redis: [Go-Redis](https://github.com/redis/go-redis)
 
 - 迁移数据库 [github](https://github.com/golang-migrate/migrate)
@@ -206,46 +206,11 @@
 - (可选) 修改`pkg` -> `config` -> `jwt.yaml` JWT 秘钥
 
 ### 安装后端服务
-
-1. `gin`
-    ```shell
-    go get -u github.com/gin-gonic/gin
-    ```
-
-2. `gin-CORS`
-
-    ```shell
-    go get github.com/gin-contrib/cors
-    ```
-
-3. `slog` 日志库
-    ```shell
-    go get github.com/gookit/slog
-    ```
-
-4. `godotenv` 环境变量
-    ```shell
-    go get github.com/joho/godotenv
-    ```
-
-5. `air` 开发热重启
+1. `air` 开发热重启
     ```shell
     go install github.com/cosmtrek/air@latest
     ```
 
-6. sql迁移.
-
-    ```shell
-    go get github.com/golang-migrate/migrate/v4
-    go get github.com/golang-migrate/migrate/v4/database/postgres
-    go get github.com/golang-migrate/migrate/v4/source/file
-    ```
-
-7. `go-redis` Redis 客户端
-    ```shell
-    go get github.com/redis/go-redis/v9
-    ```
-   
 ### 安装前端服务
 
 1. 进入到项目的前端目录`Client`.
@@ -270,6 +235,7 @@
    ```
 
 ### 运行后端服务
+
 #### 开发
 - 普通运行
     ```shell
