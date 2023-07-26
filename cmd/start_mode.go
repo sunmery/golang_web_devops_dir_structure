@@ -7,12 +7,11 @@ import (
 )
 
 var (
-	MODE        string
-	PORT        string
-	HOST        string
-	FILE        string
-	PRODUCTION  = []string{"pro", "prod", "production"}
-	DEVELOPMENT = []string{"dev", "develop", "development"}
+	MODE       string
+	PORT       string
+	HOST       string
+	FILE       string
+	PRODUCTION = []string{"pro", "prod", "production"}
 )
 
 // StartMode 程序启动模式
